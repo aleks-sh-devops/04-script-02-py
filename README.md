@@ -54,14 +54,35 @@ for result in result_os.split('\n'):
 ```
 
 ### Ваш скрипт:
-```python
-???
+#!/usr/bin/env python3
+
+import os
+
+bash_command = ["cd ~/netology/sysadm-homeworks", "git status"]
+result_os = os.popen(' && '.join(bash_command)).read()
+is_change = False
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', '')
+        path_modified_files = os.path.abspath(prepare_result)
+#        print('modif: ', path_modified_files)
+        print('modif: ', path_modified_files)
+#        break
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+root@menorca:~# ./1.py
+modif:  /root/123.txt
+root@menorca:~#
+root@menorca:~/netology/sysadm-homeworks# git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   123.txt
+        new file:   123/456.txt
 ```
+Обращаю внимание, что отображаются только модифицированные файлы!
 
 ## Обязательная задача 3
 1. Доработать скрипт выше так, чтобы он мог проверять не только локальный репозиторий в текущей директории, а также умел воспринимать путь к репозиторию, который мы передаём как входной параметр. Мы точно знаем, что начальство коварное и будет проверять работу этого скрипта в директориях, которые не являются локальными репозиториями.
