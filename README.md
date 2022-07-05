@@ -150,65 +150,42 @@ fatal: not a git repository (or any of the parent directories): .git
 import time
 import socket
 
-dns_names =['drive.google.com', 'mail.google.com', 'google.com']
+dns_names = ['drive.google.com', 'mail.google.com', 'google.com', 'ya.ru']
+old_ip = []
 
-old_ip_drive_google_com = ''
-old_ip_mail_google_com = ''
-old_ip_google_com = ''
+i = 0
+
+while i < len(dns_names):
+#    print (dns_names[i])
+#    print (socket.gethostbyname(dns_names[i]))
+    old_ip.append(socket.gethostbyname(dns_names[i]))
+    i += 1
+#print ('old_ip: ', old_ip)
 
 while True:
     for name in dns_names:
-#        print ('DNS Name = ', name, 'IP Address = ', socket.gethostbyname(name))
-        if name == 'drive.google.com' and old_ip_drive_google_com == '':
-            old_ip_drive_google_com = socket.gethostbyname(name)
-        if name == 'drive.google.com' and old_ip_drive_google_com != '':
-            if old_ip_drive_google_com == socket.gethostbyname(name):
-#                print ('true')
-                print ('DNS Name = ', name, 'IP Address = ', socket.gethostbyname(name))
-            else:
-                print ('[ERROR] ', name, 'IP mismatch: ', old_ip_drive_google_com, socket.gethostbyname(name))
-                old_ip_drive_google_com = socket.gethostbyname(name)
-#            print (old_ip_drive_google_com, socket.gethostbyname(name))
+        if socket.gethostbyname(name) == old_ip[dns_names.index(name)]:
+            print ('DNS Name = ', name, 'IP Address = ', socket.gethostbyname(name))
+        else:
+            print ('[ERROR] ', name, 'IP mismatch! Old IP:', old_ip[dns_names.index(name)], 'New IP:', socket.gethostbyname(name))
+            old_ip.pop(dns_names.index(name))
+            old_ip.insert(dns_names.index(name), socket.gethostbyname(name))
+        time.sleep(2)
 
-
-        if name == 'mail.google.com' and old_ip_mail_google_com == '':
-            old_ip_mail_google_com = socket.gethostbyname(name)
-        if name == 'mail.google.com' and old_ip_mail_google_com != '':
-            if old_ip_mail_google_com == socket.gethostbyname(name):
-#                print ('true')
-                print ('DNS Name = ', name, 'IP Address = ', socket.gethostbyname(name))
-            else:
-                print ('[ERROR] ', name, 'IP mismatch: ', old_ip_mail_google_com, socket.gethostbyname(name))
-                old_ip_mail_google_com = socket.gethostbyname(name)
-#            print (old_ip_mail_google_com, socket.gethostbyname(name))
-
-
-        if name == 'google.com' and old_ip_google_com == '':
-            old_ip_google_com = socket.gethostbyname(name)
-        if name == 'google.com' and old_ip_google_com != '':
-            if old_ip_google_com == socket.gethostbyname(name):
-#                print ('true')
-                print ('DNS Name = ', name, 'IP Address = ', socket.gethostbyname(name))
-            else:
-                print ('[ERROR] ', name, 'IP mismatch: ', old_ip_google_com, socket.gethostbyname(name))
-                old_ip_google_com = socket.gethostbyname(name)
-#            print (old_ip_google_com, socket.gethostbyname(name))
-
-    time.sleep(2)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-DNS Name =  drive.google.com IP Address =  64.233.165.194
-DNS Name =  mail.google.com IP Address =  216.58.210.165
-DNS Name =  google.com IP Address =  216.58.210.142
-DNS Name =  drive.google.com IP Address =  64.233.165.194
-DNS Name =  mail.google.com IP Address =  216.58.210.165
-DNS Name =  google.com IP Address =  216.58.210.142
-DNS Name =  drive.google.com IP Address =  64.233.165.194
-[ERROR] mail.google.com 216.58.210.165 64.233.162.109
-DNS Name =  google.com IP Address =  216.58.210.142
-DNS Name =  drive.google.com IP Address =  64.233.165.194
-DNS Name =  mail.google.com IP Address =  64.233.162.109
-DNS Name =  google.com IP Address =  216.58.210.142
+DNS Name =  drive.google.com IP Address =  142.251.1.194
+[ERROR]  mail.google.com IP mismatch! Old IP: 74.125.131.19 New IP: 74.125.131.18
+[ERROR]  google.com IP mismatch! Old IP: 64.233.164.113 New IP: 64.233.164.100
+DNS Name =  ya.ru IP Address =  87.250.250.242
+DNS Name =  drive.google.com IP Address =  142.251.1.194
+DNS Name =  mail.google.com IP Address =  74.125.131.18
+DNS Name =  google.com IP Address =  64.233.164.100
+DNS Name =  ya.ru IP Address =  87.250.250.242
+DNS Name =  drive.google.com IP Address =  142.251.1.194
+DNS Name =  mail.google.com IP Address =  74.125.131.18
+DNS Name =  google.com IP Address =  64.233.164.100
+DNS Name =  ya.ru IP Address =  87.250.250.242
 ```
